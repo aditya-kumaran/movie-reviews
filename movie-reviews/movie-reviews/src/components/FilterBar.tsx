@@ -69,11 +69,11 @@ export function FilterBar({
   };
 
   return (
-    <div className="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800">
+    <div className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-violet-500/20">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input
               type="text"
               placeholder="Search movies, genres, or reviews..."
@@ -83,9 +83,9 @@ export function FilterBar({
               }
               className={cn(
                 "w-full pl-10 pr-4 py-2.5 rounded-lg",
-                "bg-zinc-900 border border-zinc-800",
-                "text-white placeholder-zinc-500",
-                "focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50",
+                "bg-slate-900 border border-slate-700",
+                "text-white placeholder-slate-500",
+                "focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50",
                 "transition-all duration-200"
               )}
             />
@@ -98,9 +98,9 @@ export function FilterBar({
                 onChange={(e) => onSortChange(e.target.value as SortOption)}
                 className={cn(
                   "appearance-none pl-4 pr-10 py-2.5 rounded-lg",
-                  "bg-zinc-900 border border-zinc-800",
+                  "bg-slate-900 border border-slate-700",
                   "text-white cursor-pointer",
-                  "focus:outline-none focus:border-amber-500/50",
+                  "focus:outline-none focus:border-violet-500/50",
                   "transition-all duration-200"
                 )}
               >
@@ -110,7 +110,7 @@ export function FilterBar({
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             </div>
 
             <button
@@ -119,14 +119,14 @@ export function FilterBar({
                 "flex items-center gap-2 px-4 py-2.5 rounded-lg",
                 "border transition-all duration-200",
                 isExpanded || activeFilterCount > 0
-                  ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                  : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                  ? "bg-violet-500/10 border-violet-500/30 text-violet-400"
+                  : "bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600"
               )}
             >
               <SlidersHorizontal className="w-4 h-4" />
               <span className="hidden sm:inline">Filters</span>
               {activeFilterCount > 0 && (
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-black text-xs font-bold">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-violet-500 text-white text-xs font-bold">
                   {activeFilterCount}
                 </span>
               )}
@@ -145,7 +145,7 @@ export function FilterBar({
             >
               <div className="pt-4 space-y-4">
                 <div>
-                  <h3 className="text-sm font-medium text-zinc-400 mb-2">Genres</h3>
+                  <h3 className="text-sm font-medium text-slate-400 mb-2">Genres</h3>
                   <div className="flex flex-wrap gap-2">
                     {genres.map((genre) => (
                       <button
@@ -154,8 +154,8 @@ export function FilterBar({
                         className={cn(
                           "px-3 py-1.5 rounded-full text-sm transition-all duration-200",
                           filters.genres.includes(genre)
-                            ? "bg-amber-500 text-black font-medium"
-                            : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                            ? "bg-violet-500 text-white font-medium"
+                            : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                         )}
                       >
                         {genre}
@@ -165,7 +165,7 @@ export function FilterBar({
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-zinc-400 mb-2">
+                  <h3 className="text-sm font-medium text-slate-400 mb-2">
                     Class Recommendation
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -176,8 +176,8 @@ export function FilterBar({
                         className={cn(
                           "px-3 py-1.5 rounded-full text-sm transition-all duration-200",
                           filters.classRecommendations.includes(rec as ClassRecommendation)
-                            ? "bg-amber-500 text-black font-medium"
-                            : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                            ? "bg-violet-500 text-white font-medium"
+                            : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                         )}
                       >
                         {rec}
@@ -187,7 +187,7 @@ export function FilterBar({
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-zinc-400 mb-2">
+                  <h3 className="text-sm font-medium text-slate-400 mb-2">
                     Rating Range: {filters.minRating} - {filters.maxRating}
                   </h3>
                   <div className="flex items-center gap-4">
@@ -203,7 +203,7 @@ export function FilterBar({
                           minRating: parseFloat(e.target.value),
                         })
                       }
-                      className="flex-1 accent-amber-500"
+                      className="flex-1"
                     />
                     <input
                       type="range"
@@ -217,7 +217,7 @@ export function FilterBar({
                           maxRating: parseFloat(e.target.value),
                         })
                       }
-                      className="flex-1 accent-amber-500"
+                      className="flex-1"
                     />
                   </div>
                 </div>
@@ -225,7 +225,7 @@ export function FilterBar({
                 {activeFilterCount > 0 && (
                   <button
                     onClick={clearFilters}
-                    className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors"
+                    className="flex items-center gap-2 text-sm text-pink-400 hover:text-pink-300 transition-colors"
                   >
                     <X className="w-4 h-4" />
                     Clear all filters
