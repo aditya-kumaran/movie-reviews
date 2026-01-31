@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Film, Clapperboard } from "lucide-react";
+import { Film, Clapperboard, Plus, Home } from "lucide-react";
 
 export function Header() {
   return (
@@ -9,21 +10,35 @@ export function Header() {
       <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-red-500/5" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-900/20 via-transparent to-transparent" />
       
-      <div className="relative max-w-7xl mx-auto px-4 py-12 md:py-16">
+      <nav className="relative max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 text-zinc-400 hover:text-amber-400 transition-colors">
+          <Home className="w-5 h-5" />
+          <span className="hidden sm:inline">All Reviews</span>
+        </Link>
+        <Link
+          href="/add-review"
+          className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-lg transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          <span className="hidden sm:inline">Add Review</span>
+        </Link>
+      </nav>
+
+      <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
+          <Link href="/" className="inline-flex items-center justify-center gap-3 mb-4">
             <Clapperboard className="w-8 h-8 md:w-10 md:h-10 text-amber-500" />
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
               <span className="text-white">Reel</span>
               <span className="text-amber-500">Reviews</span>
             </h1>
             <Film className="w-8 h-8 md:w-10 md:h-10 text-amber-500" />
-          </div>
+          </Link>
           
           <motion.p
             initial={{ opacity: 0 }}
