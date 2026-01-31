@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, Film, ArrowLeft, Plus, X, Copy, Check } from "lucide-react";
+import { Search, Film, ArrowLeft, Plus, X, Check, Loader2 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { TMDBMovie, CLASS_RECOMMENDATIONS, GENRES, ClassRecommendation } from "@/types/movie";
@@ -44,13 +45,15 @@ const initialFormData: ReviewFormData = {
 };
 
 export default function AddReviewPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<TMDBMovie[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [formData, setFormData] = useState<ReviewFormData>(initialFormData);
-  const [copied, setCopied] = useState(false);
-  const [generatedJson, setGeneratedJson] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const searchMovies = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -111,7 +114,11 @@ export default function AddReviewPage() {
     return `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${yearPart}`;
   };
 
-  const generateReviewJson = () => {
+  const saveReview = async () => {
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+
     const review = {
       id: generateId(formData.title, formData.releaseDate),
       title: formData.title,
@@ -128,20 +135,37 @@ export default function AddReviewPage() {
       tmdbId: formData.tmdbId,
       posterPath: formData.posterPath,
     };
-    setGeneratedJson(JSON.stringify(review, null, 2));
-  };
 
-  const copyToClipboard = async () => {
-    if (generatedJson) {
-      await navigator.clipboard.writeText(generatedJson);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    try {
+      const response = await fetch("/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(review),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save review");
+      }
+
+      setSaveSuccess(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+    } catch (error) {
+      console.error("Error saving review:", error);
+      setSaveError(error instanceof Error ? error.message : "Failed to save review");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const resetForm = () => {
     setFormData(initialFormData);
-    setGeneratedJson(null);
+    setSaveError(null);
+    setSaveSuccess(false);
     setSearchQuery("");
   };
 
@@ -395,55 +419,55 @@ export default function AddReviewPage() {
 
             <div className="flex gap-4">
               <button
-                onClick={generateReviewJson}
-                disabled={!formData.title || !formData.classRecommendation || formData.genres.length === 0}
+                onClick={saveReview}
+                disabled={!formData.title || !formData.classRecommendation || formData.genres.length === 0 || isSaving}
                 className={cn(
-                  "flex-1 py-3 px-6 rounded-lg font-semibold transition-all",
-                  formData.title && formData.classRecommendation && formData.genres.length > 0
+                  "flex-1 py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center gap-2",
+                  formData.title && formData.classRecommendation && formData.genres.length > 0 && !isSaving
                     ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400"
                     : "bg-slate-700 text-slate-400 cursor-not-allowed"
                 )}
               >
-                Generate JSON
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Saving...
+                  </>
+                ) : saveSuccess ? (
+                  <>
+                    <Check className="w-5 h-5 text-green-400" />
+                    Saved! Redirecting...
+                  </>
+                ) : (
+                  "Save Review"
+                )}
               </button>
               <button
                 onClick={resetForm}
-                className="py-3 px-6 rounded-lg font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all"
+                disabled={isSaving}
+                className="py-3 px-6 rounded-lg font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all disabled:opacity-50"
               >
                 Reset
               </button>
             </div>
 
-            {generatedJson && (
+            {saveError && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative"
+                className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-slate-300">
-                    Generated JSON (copy and add to reviews.json)
-                  </label>
-                  <button
-                    onClick={copyToClipboard}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors text-sm"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-4 h-4 text-green-400" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4" />
-                        Copy
-                      </>
-                    )}
-                  </button>
-                </div>
-                <pre className="p-4 bg-slate-800 border border-slate-700 rounded-lg overflow-x-auto text-sm text-slate-300">
-                  {generatedJson}
-                </pre>
+                {saveError}
+              </motion.div>
+            )}
+
+            {saveSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300"
+              >
+                Review saved successfully! Redirecting to home page...
               </motion.div>
             )}
           </div>
