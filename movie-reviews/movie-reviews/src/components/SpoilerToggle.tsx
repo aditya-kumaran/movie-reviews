@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SpoilerToggleProps {
-  content: string;
+  content?: string;
+  children?: ReactNode;
   className?: string;
 }
 
-export function SpoilerToggle({ content, className }: SpoilerToggleProps) {
+export function SpoilerToggle({ content, children, className }: SpoilerToggleProps) {
   const [isRevealed, setIsRevealed] = useState(false);
 
   return (
@@ -42,7 +43,7 @@ export function SpoilerToggle({ content, className }: SpoilerToggleProps) {
             className="overflow-hidden"
           >
             <div className="mt-4 p-4 rounded-lg bg-red-500/5 border border-red-500/20">
-              <p className="text-zinc-300 leading-relaxed">{content}</p>
+              {children || <p className="text-zinc-300 leading-relaxed">{content}</p>}
             </div>
           </motion.div>
         )}

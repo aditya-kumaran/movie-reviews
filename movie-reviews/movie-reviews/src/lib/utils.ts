@@ -28,6 +28,18 @@ export function getRatingColor(rating: number): string {
 
 export function getClassRecommendationColor(recommendation: string): string {
   switch (recommendation) {
+    case "Masterclass":
+      return "bg-amber-500/20 text-amber-300 border-amber-500/30";
+    case "Council Class":
+      return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+    case "Recommendable":
+      return "bg-green-500/20 text-green-300 border-green-500/30";
+    case "Rewatchable":
+      return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+    case "Existent":
+      return "bg-orange-500/20 text-orange-300 border-orange-500/30";
+    case "Meme":
+      return "bg-red-500/20 text-red-300 border-red-500/30";
     case "Must Watch":
       return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
     case "Highly Recommended":
