@@ -1,11 +1,6 @@
 import { MongoClient, Db } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || "masterclassers";
-
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
-}
 
 let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
@@ -18,7 +13,12 @@ export async function connectToDatabase(): Promise<{
     return { client: cachedClient, db: cachedDb };
   }
 
-  const client = await MongoClient.connect(MONGODB_URI);
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("Please define the MONGODB_URI environment variable");
+  }
+
+  const client = await MongoClient.connect(uri);
   const db = client.db(MONGODB_DB);
 
   cachedClient = client;
